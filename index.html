@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BBS Style Discovery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --paper:#f7f4ee;
+  --paper-deep:#f1ece4;
+  --panel:#fbfaf7;
+  --line:#d8d0c4;
+  --line-soft:#e8e1d7;
+  --ink:#26231f;
+  --ink-soft:#5f5951;
+  --muted:#9a9082;
+  --accent:#8d7a62;
+  --white:#ffffff;
+  --radius:6px;
+  --shadow:0 10px 30px rgba(38,35,31,0.04);
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  background:linear-gradient(to bottom, #f8f5ef 0%, #f4efe8 100%);
+  color:var(--ink);
+  font-family:'Jost',sans-serif;
+  font-weight:300;
+  line-height:1.7;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+.page{
+  max-width:1120px;
+  margin:0 auto;
+  padding:2.25rem 1.25rem 4rem;
+}
+
+.topbar{
+  border-bottom:1px solid var(--line);
+  padding-bottom:1.35rem;
+  margin-bottom:1.5rem;
+}
+
+.brandline{
+  display:flex;
+  align-items:flex-start;
+  gap:.95rem;
+}
+
+.mark{
+  font-size:.78rem;
+  color:var(--accent);
+  padding-top:.6rem;
+  letter-spacing:.18em;
+  line-height:1;
+}
+
+.title-wrap h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.7rem;
+  font-weight:400;
+  line-height:1;
+  letter-spacing:.01em;
+  color:var(--ink);
+}
+
+.title-wrap p{
+  margin-top:.32rem;
+  font-size:.74rem;
+  text-transform:uppercase;
+  letter-spacing:.18em;
+  color:var(--muted);
+}
+
+.view{
+  display:none;
+}
+
+.view.active{
+  display:block;
+}
+
+.intro{
+  margin-bottom:1.65rem;
+}
+
+.intro p{
+  max-width:800px;
+  font-size:.95rem;
+  color:var(--ink-soft);
+  line-height:1.95;
+}
+
+.panel{
+  background:rgba(251,250,247,0.92);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:1.5rem;
+  box-shadow:var(--shadow);
+}
+
+.hero{
+  padding:1.6rem 0 .25rem;
+}
+
+.hero h2,
+.screen-title,
+.topic-title,
+.topic-section h3,
+.result-block h3{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.95rem;
+  font-weight:400;
+  line-height:1.08;
+  letter-spacing:.01em;
+  color:var(--ink);
+  margin-bottom:.6rem;
+}
+
+.hero p,
+.screen-helper,
+.topic-body,
+.topic-intro,
+.result-block p{
+  font-size:.95rem;
+  color:var(--ink-soft);
+  line-height:1.95;
+  max-width:780px;
+}
+
+.path-grid,
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1rem;
+  margin-top:1.35rem;
+}
+
+.path-card,
+.choice-card{
+  border:1px solid var(--line);
+  background:var(--white);
+  border-radius:var(--radius);
+  padding:1.25rem;
+  cursor:pointer;
+  transition:all .16s ease;
+  text-align:left;
+  box-shadow:0 6px 18px rgba(38,35,31,0.03);
+}
+
+.path-card:hover,
+.choice-card:hover{
+  background:var(--paper-deep);
+  transform:translateY(-1px);
+}
+
+.path-card h3,
+.choice-card strong{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.45rem;
+  font-weight:500;
+  line-height:1.1;
+  margin-bottom:.45rem;
+  color:var(--ink);
+  display:block;
+}
+
+.path-card p,
+.choice-card span{
+  font-size:.88rem;
+  color:var(--ink-soft);
+  line-height:1.85;
+  max-width:unset;
+  display:block;
+}
+
+.choice-card.selected{
+  background:var(--ink);
+  border-color:var(--ink);
+  color:var(--paper);
+}
+
+.choice-card.selected strong,
+.choice-card.selected span{
+  color:var(--paper);
+}
+
+.path-link{
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  color:var(--accent);
+  margin-top:1rem;
+}
+
+.navigation{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:1rem;
+  margin-top:1.5rem;
+}
+
+.btn-row{
+  display:flex;
+  gap:.65rem;
+  flex-wrap:wrap;
+}
+
+.btn{
+  border:1px solid var(--line);
+  background:var(--white);
+  color:var(--ink);
+  border-radius:var(--radius);
+  padding:.88rem 1.05rem;
+  font-family:'Jost',sans-serif;
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  cursor:pointer;
+  transition:all .14s ease;
+}
+
+.btn:hover{
+  background:var(--paper-deep);
+}
+
+.btn-primary{
+  background:var(--ink);
+  border-color:var(--ink);
+  color:var(--paper);
+}
+
+.btn-primary:hover{
+  background:#38332d;
+}
+
+.btn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+.progress{
+  font-size:.79rem;
+  color:var(--muted);
+}
+
+.note-field{
+  margin-top:1rem;
+}
+
+.note-field textarea{
+  width:100%;
+  min-height:140px;
+  border:1px solid var(--line);
+  background:var(--white);
+  border-radius:var(--radius);
+  padding:1rem;
+  font-family:'Jost',sans-serif;
+  font-size:.92rem;
+  font-weight:300;
+  color:var(--ink);
+  resize:vertical;
+  line-height:1.8;
+}
+
+.note-field textarea:focus{
+  outline:none;
+  border-color:var(--accent);
+  background:#fffdfa;
+}
+
+.result-block{
+  margin-top:1.25rem;
+  padding-top:1.1rem;
+  border-top:1px solid var(--line-soft);
+}
+
+.result-block:first-of-type{
+  margin-top:0;
+  padding-top:0;
+  border-top:none;
+}
+
+.topic-meta{
+  font-size:.68rem;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  color:var(--muted);
+  margin-bottom:.65rem;
+}
+
+.topic-intro{
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.62rem;
+  line-height:1.42;
+  color:var(--ink);
+  margin-bottom:1.15rem;
+  max-width:860px;
+}
+
+.topic-section{
+  margin-top:1.15rem;
+  padding-top:1rem;
+  border-top:1px solid var(--line-soft);
+}
+
+.hidden{
+  display:none !important;
+}
+
+@media (max-width:700px){
+  .page{
+    padding:1.2rem .9rem 2rem;
+  }
+
+  .title-wrap h1{
+    font-size:2rem;
+  }
+
+  .hero h2,
+  .screen-title,
+  .topic-title,
+  .topic-section h3,
+  .result-block h3{
+    font-size:1.45rem;
+  }
+
+  .path-grid,
+  .card-grid{
+    grid-template-columns:1fr;
+  }
+
+  .navigation{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .btn-row{
+    width:100%;
+  }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <div class="brandline">
+      <div class="mark">■</div>
+      <div class="title-wrap">
+        <h1>BBS Style Discovery</h1>
+        <p>Benjamin Barker Studios</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Home View -->
+  <section class="view active" id="homeView">
+    <div class="intro">
+      <p>
+        A guided way to explore dressing with greater ease, refinement, and confidence in warm climates. You may begin with a personal direction, or enter the wider world of cloth, silhouette, colour, and tropical tailoring.
+      </p>
+    </div>
+
+    <div class="panel hero">
+      <h2>Choose Your Path</h2>
+      <p>
+        Whether you would like guidance or simply wish to explore further, Benjamin Barker Studios offers both a point of view and a deeper sartorial language.
+      </p>
+
+      <div class="path-grid">
+        <button class="path-card" id="goDiscovery">
+          <h3>Discover Your Direction</h3>
+          <p>
+            A guided journey to help you understand the garments, cloths, and wardrobe direction that may suit you best.
+          </p>
+          <div class="path-link">Begin here</div>
+        </button>
+
+        <button class="path-card" id="goGuide">
+          <h3>Enter the BBS Guide</h3>
+          <p>
+            A deeper look at tropical tailoring, cloth, colour, and sartorial detail.
+          </p>
+          <div class="path-link">Explore the guide</div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Discover View -->
+  <section class="view" id="discoverView">
+    <div class="panel">
+      <div id="discoverContent"></div>
+    </div>
+  </section>
+
+  <!-- Guide View -->
+  <section class="view" id="guideView">
+    <div class="panel">
+      <div id="guideContent"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const discoveryAnswers = {
+  occasion: '',
+  priority: '',
+  style: '',
+  wardrobe: '',
+  notes: ''
+};
+
+let discoveryStep = 0;
+let guidePath = [];
+
+const discoverySteps = [
+  {
+    key: 'occasion',
+    title: 'What are you dressing for?',
+    helper: 'Choose the setting that feels most relevant at the moment.',
+    options: [
+      { value: 'Work', desc: 'Polished, versatile pieces for professional settings.' },
+      { value: 'Travel', desc: 'Ease, resilience, and elegance across different settings.' },
+      { value: 'Wedding or special occasion', desc: 'Something elevated, memorable, and appropriate to the setting.' },
+      { value: 'Smart casual', desc: 'Refined ease for dinners, weekends, and more relaxed occasions.' },
+      { value: 'Holiday or resort', desc: 'Relaxed warm-weather dressing with polish and character.' },
+      { value: 'Wardrobe refresh', desc: 'A more considered wardrobe with better range and coherence.' }
+    ]
+  },
+  {
+    key: 'priority',
+    title: 'What matters most to you?',
+    helper: 'Choose the quality you value most in your wardrobe right now.',
+    options: [
+      { value: 'Ease and comfort', desc: 'Clothes that feel natural, breathable, and easy to wear.' },
+      { value: 'Polish and structure', desc: 'A cleaner, sharper line with a more composed feel.' },
+      { value: 'Versatility', desc: 'Pieces that can work across more than one setting.' },
+      { value: 'Individuality', desc: 'More personality, texture, and distinction.' },
+      { value: 'Breathability in warm weather', desc: 'Dressing well without heaviness in the climate.' }
+    ]
+  },
+  {
+    key: 'style',
+    title: 'Which of these feels closest to you?',
+    helper: 'Choose the style language that feels most natural.',
+    options: [
+      { value: 'Understated', desc: 'Quiet, refined, and never overstated.' },
+      { value: 'Sharp', desc: 'Clean lines, stronger structure, and more precision.' },
+      { value: 'Relaxed', desc: 'Ease, softness, and natural movement.' },
+      { value: 'Expressive', desc: 'More texture, character, and individuality.' }
+    ]
+  },
+  {
+    key: 'wardrobe',
+    title: 'What would you like more of in your wardrobe?',
+    helper: 'Choose the area you would most like to improve or build on.',
+    options: [
+      { value: 'Better jackets', desc: 'Sharper, softer, or more versatile layering pieces.' },
+      { value: 'Better trousers', desc: 'Cleaner lines, better drape, and more range.' },
+      { value: 'More refined casual pieces', desc: 'Relaxed pieces that still feel considered.' },
+      { value: 'Occasion dressing', desc: 'Something more elevated for events and special moments.' },
+      { value: 'A more complete wardrobe', desc: 'A more coherent foundation overall.' }
+    ]
+  },
+  {
+    key: 'notes',
+    title: 'Anything else you’d like us to know?',
+    helper: 'Optional — you may share what you already wear most, what you struggle with, or what you would like more of.',
+    textarea: true
+  }
+];
+
+const guideTree = {
+  about: {
+    type: 'group',
+    title: 'About BBS',
+    intro: 'Brand philosophy, distinction, and point of view.',
+    children: {
+      'what-is-bbs': {
+        type: 'topic',
+        title: 'What is Benjamin Barker Studios?',
+        intro: 'A more refined and directional expression of tropical classic menswear.',
+        sections: [
+          { heading: 'What It Is', body: 'Benjamin Barker Studios is a menswear brand focused on relaxed, classic design combining form and function with artisanal distinction.' },
+          { heading: 'Why It Matters', body: 'It offers a more considered way of dressing for clients who appreciate cloth, silhouette, refinement, and dressing well in warm climates.' },
+          { heading: 'Best For', body: 'Clients who want more than everyday basics and are looking for a stronger point of view.' },
+          { heading: 'Trade-Off', body: 'It is not intended to feel generic, trend-driven, or purely functional.' },
+          { heading: 'In the BBS World', body: 'BBS should feel refined, intelligent, climate-aware, and quietly distinctive.' }
+        ]
+      },
+      'bb-vs-bbs': {
+        type: 'topic',
+        title: 'Benjamin Barker vs Benjamin Barker Studios',
+        intro: 'A difference in ideology rather than hierarchy.',
+        sections: [
+          { heading: 'What It Is', body: 'Benjamin Barker focuses on everyday essentials and accessible menswear, while Benjamin Barker Studios explores a more elevated world of tropical classic dressing.' },
+          { heading: 'Why It Matters', body: 'This helps clients understand that the product, cloth, silhouette, and overall point of view are serving a different sensibility.' },
+          { heading: 'Best For', body: 'Clients trying to understand why the two worlds feel different.' },
+          { heading: 'Trade-Off', body: 'The distinction should never make Benjamin Barker seem inferior — only different in philosophy and intent.' },
+          { heading: 'In the BBS World', body: 'BBS is more cloth-led, more relaxed-classic, more artisanal, and more directional in its expression.' }
+        ]
+      },
+      'inhouse-vs-european': {
+        type: 'topic',
+        title: 'In-House vs European Fabrics',
+        intro: 'Not all cloth is the same, even when the garment category looks similar.',
+        sections: [
+          { heading: 'What It Is', body: 'In-House fabrics can still be strong and useful, but European fabrics often offer a more refined hand, stronger drape, better resilience, richer texture, and more character overall.' },
+          { heading: 'Why It Matters', body: 'Clients should understand what they are paying for when they move into better cloth — not just a label, but a different wearing experience.' },
+          { heading: 'Best For', body: 'Clients comparing In-House fabrics with European cloths and wondering where the value sits.' },
+          { heading: 'Trade-Off', body: 'The difference is not always immediate to the eye — it often reveals itself in wear, drape, feel, and longevity over time.' },
+          { heading: 'In the BBS World', body: 'In-House fabrics can still be good, but better European cloth often gives a more convincing and more satisfying result.' }
+        ]
+      }
+    }
+  },
+
+  tailoring: {
+    type: 'group',
+    title: 'Tailoring',
+    intro: 'Choose a garment family to explore further.',
+    children: {
+      suits: {
+        type: 'group',
+        title: 'Suits',
+        intro: 'Suit styles, cloths, details, use cases, and construction.',
+        children: {
+          configuration: {
+            type: 'group',
+            title: 'Configuration',
+            intro: 'How the suit is composed.',
+            children: {
+              'two-piece': {
+                type: 'topic',
+                title: 'Two-Piece Suit',
+                intro: 'The most direct and versatile suit format.',
+                sections: [
+                  { heading: 'What It Is', body: 'A two-piece suit consists of a jacket and matching trousers.' },
+                  { heading: 'Why It Matters', body: 'It is the easiest and most versatile place to begin for most clients.' },
+                  { heading: 'Best For', body: 'Work, travel, first suits, and clients who want range.' },
+                  { heading: 'Trade-Off', body: 'It carries less formal presence than a three-piece.' },
+                  { heading: 'In the BBS World', body: 'A two-piece should feel elegant, climate-aware, and easy to wear.' }
+                ]
+              },
+              'three-piece': {
+                type: 'topic',
+                title: 'Three-Piece Suit',
+                intro: 'A stronger and more complete tailoring expression.',
+                sections: [
+                  { heading: 'What It Is', body: 'A three-piece suit includes a jacket, trousers, and matching vest.' },
+                  { heading: 'Why It Matters', body: 'It adds depth, structure, and a more complete sartorial presence.' },
+                  { heading: 'Best For', body: 'Weddings, more formal occasions, and clients who want a stronger tailored statement.' },
+                  { heading: 'Trade-Off', body: 'It is less casual, less flexible, and more specific than a two-piece.' },
+                  { heading: 'In the BBS World', body: 'A three-piece should feel intentional and balanced, never costume-like.' }
+                ]
+              }
+            }
+          }
+        }
+      },
+
+      jackets: {
+        type: 'group',
+        title: 'Jackets',
+        intro: 'Styles, cloths, details, and softer tailored expressions.',
+        children: {
+          styles: {
+            type: 'group',
+            title: 'Styles',
+            intro: 'Different jacket expressions within the BBS world.',
+            children: {
+              safari: {
+                type: 'topic',
+                title: 'Safari Jacket',
+                intro: 'A relaxed classic with structure, character, and tropical ease.',
+                sections: [
+                  { heading: 'What It Is', body: 'A safari jacket gives structure and character without feeling too formal. It is one of the clearest warm-weather alternatives to a conventional blazer.' },
+                  { heading: 'Why It Matters', body: 'It bridges tailoring and utility in a way that feels especially natural in warm climates.' },
+                  { heading: 'Best For', body: 'Smart casual dressing, travel wardrobes, and clients who appreciate relaxed classic style.' },
+                  { heading: 'Trade-Off', body: 'It is less universal than a plain navy blazer and needs the right client and setting.' },
+                  { heading: 'In the BBS World', body: 'The safari jacket is one of the clearest expressions of the BBS point of view.' }
+                ]
+              }
+            }
+          }
+        }
+      },
+
+      trousers: {
+        type: 'group',
+        title: 'Trousers',
+        intro: 'Configuration and fabrics.',
+        children: {
+          configuration: {
+            type: 'group',
+            title: 'Configuration',
+            intro: 'The structural language of the trouser.',
+            children: {
+              waistbands: {
+                type: 'group',
+                title: 'Types of Waistbands',
+                intro: 'Different waist treatments create different levels of polish and character.',
+                children: {
+                  'single-gurkha': {
+                    type: 'topic',
+                    title: 'Single Gurkha',
+                    intro: 'A cleaner and more restrained gurkha waistband.',
+                    sections: [
+                      { heading: 'What It Is', body: 'A single gurkha uses an extended waistband fastening with a cleaner and slightly less dramatic expression than a double gurkha.' },
+                      { heading: 'Why It Matters', body: 'It offers character and sartorial detail without becoming too assertive.' },
+                      { heading: 'Best For', body: 'Clients who want a more refined waistband with a little personality.' },
+                      { heading: 'Trade-Off', body: 'It is less familiar than belt loops and depends on a good waist fit.' },
+                      { heading: 'In the BBS World', body: 'A single gurkha often feels like the easiest entry into more sartorial trouser styling.' }
+                    ]
+                  },
+                  'double-gurkha': {
+                    type: 'topic',
+                    title: 'Double Gurkha',
+                    intro: 'A stronger and more expressive gurkha waistband.',
+                    sections: [
+                      { heading: 'What It Is', body: 'A double gurkha uses a fuller extended waistband treatment that creates a stronger and more visible sartorial statement.' },
+                      { heading: 'Why It Matters', body: 'It gives the trouser a more architectural and characterful waist expression.' },
+                      { heading: 'Best For', body: 'Clients who appreciate stronger trouser detail and more visible sartorial character.' },
+                      { heading: 'Trade-Off', body: 'It is more specific and less quiet than simpler waistband treatments.' },
+                      { heading: 'In the BBS World', body: 'A double gurkha should feel elegant and intentional, not theatrical.' }
+                    ]
+                  },
+                  'side-adjusters': {
+                    type: 'topic',
+                    title: 'Side Adjusters',
+                    intro: 'A cleaner alternative to belt loops.',
+                    sections: [
+                      { heading: 'What It Is', body: 'Side adjusters remove the need for a belt and create a cleaner waistband line.' },
+                      { heading: 'Why It Matters', body: 'They often make the trouser look more refined and more intentional.' },
+                      { heading: 'Best For', body: 'Tailored trousers, cleaner waistlines, and clients who appreciate a more sartorial finish.' },
+                      { heading: 'Trade-Off', body: 'They are less familiar than belt loops and depend on a good waist fit.' },
+                      { heading: 'In the BBS World', body: 'Side adjusters are a strong expression of cleaner trouser design.' }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      shirts: {
+        type: 'group',
+        title: 'Shirts',
+        intro: 'Configuration, use case, and fabrics.',
+        children: {
+          configuration: {
+            type: 'group',
+            title: 'Configuration',
+            intro: 'How the shirt is shaped through collar, cuff, and sleeve length.',
+            children: {
+              collars: {
+                type: 'group',
+                title: 'Collars',
+                intro: 'Collar shape changes the expression of a shirt more than many people realise.',
+                children: {
+                  'regular-spread': {
+                    type: 'topic',
+                    title: 'Regular Spread Collar',
+                    intro: 'Balanced, versatile, and easy to wear.',
+                    sections: [
+                      { heading: 'What It Is', body: 'A regular spread collar sits between a point collar and a wider spread, making it one of the most versatile collar shapes.' },
+                      { heading: 'Why It Matters', body: 'It works well in both business and more relaxed tailored settings.' },
+                      { heading: 'Best For', body: 'Clients who want a dependable and balanced shirt collar.' },
+                      { heading: 'Trade-Off', body: 'It is less distinctive than more expressive collar shapes.' },
+                      { heading: 'In the BBS World', body: 'A regular spread is often the easiest and most versatile place to begin.' }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      vests: {
+        type: 'group',
+        title: 'Vests',
+        intro: 'Configuration, use case, fabrics, and proportion.',
+        children: {
+          configuration: {
+            type: 'group',
+            title: 'Configuration',
+            intro: 'How the vest is structured and worn.',
+            children: {
+              'single-breasted': {
+                type: 'topic',
+                title: 'Single-Breasted Vest',
+                intro: 'The most versatile vest format.',
+                sections: [
+                  { heading: 'What It Is', body: 'A single-breasted vest is the most straightforward and adaptable waistcoat structure.' },
+                  { heading: 'Why It Matters', body: 'It works well as part of a suit, a three-piece, or certain more refined layered looks.' },
+                  { heading: 'Best For', body: 'Clients who want a cleaner and more versatile vest expression.' },
+                  { heading: 'Trade-Off', body: 'It can feel less dramatic than a double-breasted vest.' },
+                  { heading: 'In the BBS World', body: 'A single-breasted vest should feel clean, balanced, and elegant rather than fussy.' }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+const discoveryAnswers = {
+  occasion: '',
+  priority: '',
+  style: '',
+  wardrobe: '',
+  notes: ''
+};
+
+let discoveryStep = 0;
+let guidePath = [];
+
+const discoverySteps = [
+  {
+    key: 'occasion',
+    title: 'What are you dressing for?',
+    helper: 'Choose the setting that feels most relevant at the moment.',
+    options: [
+      { value: 'Work', desc: 'Polished, versatile pieces for professional settings.' },
+      { value: 'Travel', desc: 'Ease, resilience, and elegance across different settings.' },
+      { value: 'Wedding or special occasion', desc: 'Something elevated, memorable, and appropriate to the setting.' },
+      { value: 'Smart casual', desc: 'Refined ease for dinners, weekends, and more relaxed occasions.' },
+      { value: 'Holiday or resort', desc: 'Relaxed warm-weather dressing with polish and character.' },
+      { value: 'Wardrobe refresh', desc: 'A more considered wardrobe with better range and coherence.' }
+    ]
+  },
+  {
+    key: 'priority',
+    title: 'What matters most to you?',
+    helper: 'Choose the quality you value most in your wardrobe right now.',
+    options: [
+      { value: 'Ease and comfort', desc: 'Clothes that feel natural, breathable, and easy to wear.' },
+      { value: 'Polish and structure', desc: 'A cleaner, sharper line with a more composed feel.' },
+      { value: 'Versatility', desc: 'Pieces that can work across more than one setting.' },
+      { value: 'Individuality', desc: 'More personality, texture, and distinction.' },
+      { value: 'Breathability in warm weather', desc: 'Dressing well without heaviness in the climate.' }
+    ]
+  },
+  {
+    key: 'style',
+    title: 'Which of these feels closest to you?',
+    helper: 'Choose the style language that feels most natural.',
+    options: [
+      { value: 'Understated', desc: 'Quiet, refined, and never overstated.' },
+      { value: 'Sharp', desc: 'Clean lines, stronger structure, and more precision.' },
+      { value: 'Relaxed', desc: 'Ease, softness, and natural movement.' },
+      { value: 'Expressive', desc: 'More texture, character, and individuality.' }
+    ]
+  },
+  {
+    key: 'wardrobe',
+    title: 'What would you like more of in your wardrobe?',
+    helper: 'Choose the area you would most like to improve or build on.',
+    options: [
+      { value: 'Better jackets', desc: 'Sharper, softer, or more versatile layering pieces.' },
+      { value: 'Better trousers', desc: 'Cleaner lines, better drape, and more range.' },
+      { value: 'More refined casual pieces', desc: 'Relaxed pieces that still feel considered.' },
+      { value: 'Occasion dressing', desc: 'Something more elevated for events and special moments.' },
+      { value: 'A more complete wardrobe', desc: 'A more coherent foundation overall.' }
+    ]
+  },
+  {
+    key: 'notes',
+    title: 'Anything else you’d like us to know?',
+    helper: 'Optional — you may share what you already wear most, what you struggle with, or what you would like more of.',
+    textarea: true
+  }
+];
+
+const guideTree = {
+  about: {
+    type: 'group',
+    title: 'About BBS',
+    intro: 'Brand philosophy, distinction, and point of view.',
+    children: {
+      'what-is-bbs': {
+        type: 'topic',
+        title: 'What is Benjamin Barker Studios?',
+        intro: 'A more refined and directional expression of tropical classic menswear.',
+        sections: [
+          { heading: 'What It Is', body: 'Benjamin Barker Studios is a menswear brand focused on relaxed, classic design combining form and function with artisanal distinction.' },
+          { heading: 'Why It Matters', body: 'It offers a more considered way of dressing for clients who appreciate cloth, silhouette, refinement, and dressing well in warm climates.' },
+          { heading: 'Best For', body: 'Clients who want more than everyday basics and are looking for a stronger point of view.' },
+          { heading: 'Trade-Off', body: 'It is not intended to feel generic, trend-driven, or purely functional.' },
+          { heading: 'In the BBS World', body: 'BBS should feel refined, intelligent, climate-aware, and quietly distinctive.' }
+        ]
+      },
+      'bb-vs-bbs': {
+        type: 'topic',
+        title: 'Benjamin Barker vs Benjamin Barker Studios',
+        intro: 'A difference in ideology rather than hierarchy.',
+        sections: [
+          { heading: 'What It Is', body: 'Benjamin Barker focuses on everyday essentials and accessible menswear, while Benjamin Barker Studios explores a more elevated world of tropical classic dressing.' },
+          { heading: 'Why It Matters', body: 'This helps clients understand that the product, cloth, silhouette, and overall point of view are serving a different sensibility.' },
+          { heading: 'Best For', body: 'Clients trying to understand why the two worlds feel different.' },
+          { heading: 'Trade-Off', body: 'The distinction should never make Benjamin Barker seem inferior — only different in philosophy and intent.' },
+          { heading: 'In the BBS World', body: 'BBS is more cloth-led, more relaxed-classic, more artisanal, and more directional in its expression.' }
+        ]
+      },
+      'inhouse-vs-european': {
+        type: 'topic',
+        title: 'In-House vs European Fabrics',
+        intro: 'Not all cloth is the same, even when the garment category looks similar.',
+        sections: [
+          { heading: 'What It Is', body: 'In-House fabrics can still be strong and useful, but European fabrics often offer a more refined hand, stronger drape, better resilience, richer texture, and more character overall.' },
+          { heading: 'Why It Matters', body: 'Clients should understand what they are paying for when they move into better cloth — not just a label, but a different wearing experience.' },
+          { heading: 'Best For', body: 'Clients comparing In-House fabrics with European cloths and wondering where the value sits.' },
+          { heading: 'Trade-Off', body: 'The difference is not always immediate to the eye — it often reveals itself in wear, drape, feel, and longevity over time.' },
+          { heading: 'In the BBS World', body: 'In-House fabrics can still be good, but better European cloth often gives a more convincing and more satisfying result.' }
+        ]
+      }
+    }
+  },
+
+  tailoring: {
+    type: 'group',
+    title: 'Tailoring',
+    intro: 'Choose a garment family to explore further.',
+    children: {
+      suits: {
+        type: 'group',
+        title: 'Suits',
+        intro: 'Suit styles, cloths, details, use cases, and construction.',
+        children: {
+          configuration: {
+            type: 'group',
+            title: 'Configuration',
+            intro: 'How the suit is composed.',
+            children: {
+              'two-piece': {
+                type: 'topic',
+                title: 'Two-Piece Suit',
+                intro: 'The most direct and versatile suit format.',
+                sections: [
+                  { heading: 'What It Is', body: 'A two-piece suit consists of a jacket and matching trousers.' },
+                  { heading: 'Why It Matters', body: 'It is the easiest and most versatile place to begin for most clients.' },
+                  { heading: 'Best For', body: 'Work, travel, first suits, and clients who want range.' },
+                  { heading: 'Trade-Off', body: 'It carries less formal presence than a three-piece.' },
+                  { heading: 'In the BBS World', body: 'A two-piece should feel elegant, climate-aware, and easy to wear.' }
+                ]
+              },
+              'three-piece': {
+                type: 'topic',
+                title: 'Three-Piece Suit',
+                intro: 'A stronger and more complete tailoring expression.',
+                sections: [
+                  { heading: 'What It Is', body: 'A three-piece suit includes a jacket, trousers, and matching vest.' },
+                  { heading: 'Why It Matters', body: 'It adds depth, structure, and a more complete sartorial presence.' },
+                  { heading: 'Best For', body: 'Weddings, more formal occasions, and clients who want a stronger tailored statement.' },
+                  { heading: 'Trade-Off', body: 'It is less casual, less flexible, and more specific than a two-piece.' },
+                  { heading: 'In the BBS World', body: 'A three-piece should feel intentional and balanced, never costume-like.' }
+                ]
+              }
+            }
+          }
+        }
+      },
+
+      jackets: {
+        type: 'group',
+        title: 'Jackets',
+        intro: 'Styles, cloths, details, and softer tailored expressions.',
+        children: {
+          styles: {
+            type: 'group',
+            title: 'Styles',
+            intro: 'Different jacket expressions within the BBS world.',
+            children: {
+              safari: {
+                type: 'topic',
+                title: 'Safari Jacket',
+                intro: 'A relaxed classic with structure, character, and tropical ease.',
+                sections: [
+                  { heading: 'What It Is', body: 'A safari jacket gives structure and character without feeling too formal. It is one of the clearest warm-weather alternatives to a conventional blazer.' },
+                  { heading: 'Why It Matters', body: 'It bridges tailoring and utility in a way that feels especially natural in warm climates.' },
+                  { heading: 'Best For', body: 'Smart casual dressing, travel wardrobes, and clients who appreciate relaxed classic style.' },
+                  { heading: 'Trade-Off', body: 'It is less universal than a plain navy blazer and needs the right client and setting.' },
+                  { heading: 'In the BBS World', body: 'The safari jacket is one of the clearest expressions of the BBS point of view.' }
+                ]
+              }
+            }
+          }
+        }
+      },
+
+      trousers: {
+        type: 'group',
+        title: 'Trousers',
+        intro: 'Configuration and fabrics.',
+        children: {
+          configuration: {
+            type: 'group',
+            title: 'Configuration',
+            intro: 'The structural language of the trouser.',
+            children: {
+              waistbands: {
+                type: 'group',
+                title: 'Types of Waistbands',
+                intro: 'Different waist treatments create different levels of polish and character.',
+                children: {
+                  'single-gurkha': {
+                    type: 'topic',
+                    title: 'Single Gurkha',
+                    intro: 'A cleaner and more restrained gurkha waistband.',
+                    sections: [
+                      { heading: 'What It Is', body: 'A single gurkha uses an extended waistband fastening with a cleaner and slightly less dramatic expression than a double gurkha.' },
+                      { heading: 'Why It Matters', body: 'It offers character and sartorial detail without becoming too assertive.' },
+                      { heading: 'Best For', body: 'Clients who want a more refined waistband with a little personality.' },
+                      { heading: 'Trade-Off', body: 'It is less familiar than belt loops and depends on a good waist fit.' },
+                      { heading: 'In the BBS World', body: 'A single gurkha often feels like the easiest entry into more sartorial trouser styling.' }
+                    ]
+                  },
+                  'double-gurkha': {
+                    type: 'topic',
+                    title: 'Double Gurkha',
+                    intro: 'A stronger and more expressive gurkha waistband.',
+                    sections: [
+                      { heading: 'What It Is', body: 'A double gurkha uses a fuller extended waistband treatment that creates a stronger and more visible sartorial statement.' },
+                      { heading: 'Why It Matters', body: 'It gives the trouser a more architectural and characterful waist expression.' },
+                      { heading: 'Best For', body: 'Clients who appreciate stronger trouser detail and more visible sartorial character.' },
+                      { heading: 'Trade-Off', body: 'It is more specific and less quiet than simpler waistband treatments.' },
+                      { heading: 'In the BBS World', body: 'A double gurkha should feel elegant and intentional, not theatrical.' }
+                    ]
+                  },
+                  'side-adjusters': {
+                    type: 'topic',
+                    title: 'Side Adjusters',
+                    intro: 'A cleaner alternative to belt loops.',
+                    sections: [
+                      { heading: 'What It Is', body: 'Side adjusters remove the need for a belt and create a cleaner waistband line.' },
+                      { heading: 'Why It Matters', body: 'They often make the trouser look more refined and more intentional.' },
+                      { heading: 'Best For', body: 'Tailored trousers, cleaner waistlines, and clients who appreciate a more sartorial finish.' },
+                      { heading: 'Trade-Off', body: 'They are less familiar than belt loops and depend on a good waist fit.' },
+                      { heading: 'In the BBS World', body: 'Side adjusters are a strong expression of cleaner trouser design.' }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      shirts: {
+        type: 'group',
+        title: 'Shirts',
+        intro: 'Configuration, use case, and fabrics.',
+        children: {
+          configuration: {
+            type: 'group',
+            title: 'Configuration',
+            intro: 'How the shirt is shaped through collar, cuff, and sleeve length.',
+            children: {
+              collars: {
+                type: 'group',
+                title: 'Collars',
+                intro: 'Collar shape changes the expression of a shirt more than many people realise.',
+                children: {
+                  'regular-spread': {
+                    type: 'topic',
+                    title: 'Regular Spread Collar',
+                    intro: 'Balanced, versatile, and easy to wear.',
+                    sections: [
+                      { heading: 'What It Is', body: 'A regular spread collar sits between a point collar and a wider spread, making it one of the most versatile collar shapes.' },
+                      { heading: 'Why It Matters', body: 'It works well in both business and more relaxed tailored settings.' },
+                      { heading: 'Best For', body: 'Clients who want a dependable and balanced shirt collar.' },
+                      { heading: 'Trade-Off', body: 'It is less distinctive than more expressive collar shapes.' },
+                      { heading: 'In the BBS World', body: 'A regular spread is often the easiest and most versatile place to begin.' }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      vests: {
+        type: 'group',
+        title: 'Vests',
+        intro: 'Configuration, use case, fabrics, and proportion.',
+        children: {
+          configuration: {
+            type: 'group',
+            title: 'Configuration',
+            intro: 'How the vest is structured and worn.',
+            children: {
+              'single-breasted': {
+                type: 'topic',
+                title: 'Single-Breasted Vest',
+                intro: 'The most versatile vest format.',
+                sections: [
+                  { heading: 'What It Is', body: 'A single-breasted vest is the most straightforward and adaptable waistcoat structure.' },
+                  { heading: 'Why It Matters', body: 'It works well as part of a suit, a three-piece, or certain more refined layered looks.' },
+                  { heading: 'Best For', body: 'Clients who want a cleaner and more versatile vest expression.' },
+                  { heading: 'Trade-Off', body: 'It can feel less dramatic than a double-breasted vest.' },
+                  { heading: 'In the BBS World', body: 'A single-breasted vest should feel clean, balanced, and elegant rather than fussy.' }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+guideData.colour = {
+  type: 'group',
+  title: 'Colour & Wardrobe',
+  intro: 'Palette, wardrobe anchors, layering, and tropical dressing logic.',
+  children: {
+    'wardrobe-anchors': {
+      type: 'topic',
+      title: 'Core Wardrobe Anchors',
+      intro: 'A strong wardrobe usually begins with a few dependable tones.',
+      sections: [
+        { heading: 'What It Is', body: 'Navy, stone, olive, tobacco, ivory, grey, and burgundy often form the backbone of a versatile and elegant wardrobe.' },
+        { heading: 'Why It Matters', body: 'These colours combine well, feel refined, and work across multiple settings.' },
+        { heading: 'Best For', body: 'Clients building a wardrobe foundation or trying to create more coherence.' },
+        { heading: 'Trade-Off', body: 'Too much sameness without texture can feel flat.' },
+        { heading: 'In the BBS World', body: 'The point is not to own many colours, but to own the right ones in the right balance.' }
+      ]
+    },
+    'tropical-palette': {
+      type: 'topic',
+      title: 'Dressing for Tropical Light',
+      intro: 'Warm climates change how colour reads.',
+      sections: [
+        { heading: 'What It Is', body: 'In tropical light, softer neutrals and textured tones often feel more elegant than very hard, dense combinations.' },
+        { heading: 'Why It Matters', body: 'The climate and the light change how colours are perceived on the body.' },
+        { heading: 'Best For', body: 'Clients dressing for Singapore and similar warm-weather environments.' },
+        { heading: 'Trade-Off', body: 'Very dark combinations can feel heavier and less natural in daylight.' },
+        { heading: 'In the BBS World', body: 'Warm-weather elegance is often about restraint, softness, and texture rather than visual force.' }
+      ]
+    },
+    'black-is-not-everything': {
+      type: 'topic',
+      title: 'Why Black Is Not Always the Answer',
+      intro: 'Black is often overused because it feels safe.',
+      sections: [
+        { heading: 'What It Is', body: 'Many clients assume black works for everything, but in warm climates and daylight it can often feel too hard or too heavy.' },
+        { heading: 'Why It Matters', body: 'Clients need to understand that elegance does not always mean darkness.' },
+        { heading: 'Best For', body: 'Clients who default to black out of habit.' },
+        { heading: 'Trade-Off', body: 'Black still has a place, especially in eveningwear, but it should not dominate every wardrobe.' },
+        { heading: 'In the BBS World', body: 'A more nuanced wardrobe often feels richer than one built around black alone.' }
+      ]
+    },
+    'grey-and-occasion': {
+      type: 'topic',
+      title: 'Grey and Occasion Dressing',
+      intro: 'Not every grey is right for every moment.',
+      sections: [
+        { heading: 'What It Is', body: 'Many clients assume grey is safe for all occasions, but certain greys can feel too corporate or too flat for celebratory settings.' },
+        { heading: 'Why It Matters', body: 'Occasion dressing should consider mood, light, and emotional tone, not only neutrality.' },
+        { heading: 'Best For', body: 'Clients dressing for weddings and events.' },
+        { heading: 'Trade-Off', body: 'Grey can still work, but it needs the right shade, cloth, and context.' },
+        { heading: 'In the BBS World', body: 'The point is not to ban grey, but to use it more intelligently.' }
+      ]
+    },
+    'wardrobe-building': {
+      type: 'topic',
+      title: 'Building a Wardrobe',
+      intro: 'A strong wardrobe is built through coherence, not accumulation.',
+      sections: [
+        { heading: 'What It Is', body: 'The best wardrobes are built around foundations first, then texture, then more expressive additions where appropriate.' },
+        { heading: 'Why It Matters', body: 'Clients often buy isolated pieces instead of building a coherent system.' },
+        { heading: 'Best For', body: 'Clients looking for more clarity, range, and long-term value.' },
+        { heading: 'Trade-Off', body: 'A wardrobe built too quickly or too randomly often feels fragmented.' },
+        { heading: 'In the BBS World', body: 'Versatility, long-lasting style, light layering, and timelessness should remain central.' }
+      ]
+    }
+  }
+};
+
+guideData.origins = {
+  type: 'group',
+  title: 'Cloth Origins & Mills',
+  intro: 'English, Italian, Turkish, Egyptian, and selected mills.',
+  children: {
+    'english-cloth': {
+      type: 'topic',
+      title: 'English Cloth',
+      intro: 'Fuller, firmer, and often more robust in spirit.',
+      sections: [
+        { heading: 'What It Is', body: 'English cloth often carries a stronger hand, more body, and a more robust tailoring tradition.' },
+        { heading: 'Why It Matters', body: 'Clients should understand that regional cloth character changes drape, weight, and use.' },
+        { heading: 'Best For', body: 'Business tailoring, stronger structure, and clients who appreciate a more grounded cloth feel.' },
+        { heading: 'Trade-Off', body: 'It can feel heavier or firmer than softer Italian alternatives.' },
+        { heading: 'In the BBS World', body: 'English cloth often brings authority, resilience, and a more robust kind of elegance.' }
+      ]
+    },
+    'italian-cloth': {
+      type: 'topic',
+      title: 'Italian Cloth',
+      intro: 'Lighter, softer, and often more fluid in expression.',
+      sections: [
+        { heading: 'What It Is', body: 'Italian cloth often feels softer, more expressive, and more fluid, with a stronger emphasis on surface elegance and drape.' },
+        { heading: 'Why It Matters', body: 'Clients should understand that not all good cloth behaves in the same way.' },
+        { heading: 'Best For', body: 'Soft tailoring, refined warm-weather dressing, and clients who appreciate fluidity and elegance.' },
+        { heading: 'Trade-Off', body: 'It can feel less robust than firmer English cloths.' },
+        { heading: 'In the BBS World', body: 'Italian cloth often aligns beautifully with the softer and more relaxed side of tropical tailoring.' }
+      ]
+    },
+    'turkish-and-egyptian-shirting': {
+      type: 'topic',
+      title: 'Turkish and Egyptian Shirting',
+      intro: 'Shirting origin can shape feel, finish, and overall character.',
+      sections: [
+        { heading: 'What It Is', body: 'Turkish and Egyptian shirtings often bring different strengths in softness, weave character, finishing, and feel on the body.' },
+        { heading: 'Why It Matters', body: 'Clients should understand that shirting quality is not only about the shirt’s appearance, but also about how it feels and behaves in use.' },
+        { heading: 'Best For', body: 'Clients comparing shirting options and trying to understand why some shirts feel more convincing than others.' },
+        { heading: 'Trade-Off', body: 'Origin alone does not guarantee quality — the cloth still needs to be judged by hand, weave, and use.' },
+        { heading: 'In the BBS World', body: 'Shirting should be understood through feel, comfort, and finish, not just country names.' }
+      ]
+    },
+    'mills': {
+      type: 'topic',
+      title: 'Selected Mills',
+      intro: 'Mills shape cloth character, not just prestige.',
+      sections: [
+        { heading: 'What It Is', body: 'Mills such as VBC, Piacenza, Loro Piana, Solbiati, Drago, Standeven, Fox, Harrisons, Alfred Brown, Huddersfield, Holland & Sherry, Albini, Soktas, and Thomas Mason each bring different traditions and strengths.' },
+        { heading: 'Why It Matters', body: 'Clients often hear mill names without understanding what makes them meaningful.' },
+        { heading: 'Best For', body: 'Clients who want to understand why different cloths feel and behave differently.' },
+        { heading: 'Trade-Off', body: 'Mill prestige alone should not replace understanding of actual cloth character and use.' },
+        { heading: 'In the BBS World', body: 'The right mill matters because the right cloth matters — not because of the label alone.' }
+      ]
+    }
+  }
+};
+
+function renderGuideNode(node, path){
+  var html = '';
+
+  if(path.length === 0){
+    html += '<div class="intro"><p>A closer look at the language of Benjamin Barker Studios — cloth, tailoring, shirts, trousers, jackets, colour, and sartorial detail.</p></div>';
+    html += '<div class="panel">';
+    html += '<h2 class="screen-title">The BBS Guide</h2>';
+    html += '<p class="screen-helper">Choose a subject to explore further.</p>';
+    html += '<div class="card-grid">';
+    html += '<button class="choice-card guide-card" data-key="about"><strong>About BBS</strong><span>Brand philosophy, distinction, and point of view.</span></button>';
+    html += '<button class="choice-card guide-card" data-key="tailoring"><strong>Tailoring</strong><span>Suits, jackets, trousers, vests, and shirts.</span></button>';
+    html += '<button class="choice-card guide-card" data-key="colour"><strong>Colour & Wardrobe</strong><span>Palette, wardrobe anchors, layering, and tropical dressing logic.</span></button>';
+    html += '<button class="choice-card guide-card" data-key="origins"><strong>Cloth Origins & Mills</strong><span>English, Italian, Turkish, Egyptian, and selected mills.</span></button>';
+    html += '</div>';
+    html += '<div class="btn-row"><button class="btn" id="guideHomeBackBtn">Home</button></div>';
+    html += '</div>';
+    document.getElementById('guideContent').innerHTML = html;
+
+    var cards = document.querySelectorAll('.guide-card');
+    for(var i = 0; i < cards.length; i++){
+      cards[i].addEventListener('click', function(){
+        goToGuideChild(this.getAttribute('data-key'));
+      });
+    }
+
+    document.getElementById('guideHomeBackBtn').addEventListener('click', function(){
+      showView('homeView');
+    });
+
+    return;
+  }
+
+  if(node.type === 'group'){
+    html += '<div class="panel">';
+    html += '<div class="topic-meta">The BBS Guide</div>';
+    html += '<h2 class="screen-title">' + node.title + '</h2>';
+    html += '<p class="screen-helper">' + node.intro + '</p>';
+    html += '<div class="card-grid">';
+
+    for(var key in node.children){
+      if(Object.prototype.hasOwnProperty.call(node.children, key)){
+        var child = node.children[key];
+        html += '<button class="choice-card guide-child-card" data-key="' + key + '"><strong>' + child.title + '</strong><span>' + child.intro + '</span></button>';
+      }
+    }
+
+    html += '</div>';
+    html += '<div class="btn-row">';
+    html += '<button class="btn" id="guideBackBtn">Back</button>';
+    html += '<button class="btn" id="guideHomeBtn">Home</button>';
+    html += '</div>';
+    html += '</div>';
+
+    document.getElementById('guideContent').innerHTML = html;
+
+    var childCards = document.querySelectorAll('.guide-child-card');
+    for(var j = 0; j < childCards.length; j++){
+      childCards[j].addEventListener('click', function(){
+        goToGuideChild(this.getAttribute('data-key'));
+      });
+    }
+
+    document.getElementById('guideBackBtn').addEventListener('click', function(){
+      goBackGuide();
+    });
+
+    document.getElementById('guideHomeBtn').addEventListener('click', function(){
+      showView('homeView');
+    });
+
+    return;
+  }
+
+  if(node.type === 'topic'){
+    html += '<div class="panel topic-page active">';
+    html += '<div class="topic-meta">The BBS Guide</div>';
+    html += '<h2 class="topic-title">' + node.title + '</h2>';
+    html += '<div class="topic-intro">' + node.intro + '</div>';
+
+    for(var k = 0; k < node.sections.length; k++){
+      html += '<div class="topic-section">';
+      html += '<h3>' + node.sections[k].heading + '</h3>';
+      html += '<p class="topic-body">' + node.sections[k].body + '</p>';
+      html += '</div>';
+    }
+
+    html += '<div class="btn-row">';
+    html += '<button class="btn" id="topicBackBtn">Back</button>';
+    html += '<button class="btn" id="topicHomeBtn">Home</button>';
+    html += '</div>';
+    html += '</div>';
+
+    document.getElementById('guideContent').innerHTML = html;
+
+    document.getElementById('topicBackBtn').addEventListener('click', function(){
+      goBackGuide();
+    });
+
+    document.getElementById('topicHomeBtn').addEventListener('click', function(){
+      showView('homeView');
+    });
+  }
+}
+
+function getGuideNode(path){
+  if(path.length === 0) return null;
+
+  var node = guideTree[path];
+  for(var i = 1; i < path.length; i++){
+    if(!node || !node.children) return null;
+    node = node.children[path[i]];
+  }
+  return node;
+}
+
+function renderGuide(){
+  if(guidePath.length === 0){
+    renderGuideNode(null, guidePath);
+    return;
+  }
+
+  var node = getGuideNode(guidePath);
+  if(node){
+    renderGuideNode(node, guidePath);
+  }
+}
+
+function goToGuideChild(key){
+  guidePath.push(key);
+  renderGuide();
+}
+
+function goBackGuide(){
+  if(guidePath.length > 0){
+    guidePath.pop();
+  }
+  renderGuide();
+}
+
+function renderDiscoveryStep(){
+  var container = document.getElementById('discoverContent');
+  var step = discoverySteps[discoveryStep];
+  var html = '';
+
+  html += '<div class="panel">';
+  html += '<div class="progress">Step ' + (discoveryStep + 1) + ' of ' + discoverySteps.length + '</div>';
+  html += '<h2 class="screen-title">' + step.title + '</h2>';
+  html += '<p class="screen-helper">' + step.helper + '</p>';
+
+  if(step.textarea){
+    html += '<div class="note-field">';
+    html += '<textarea id="notesField" placeholder="For example: I tend to wear navy and grey, I prefer softer jackets, I travel often, or I would like something more relaxed but still polished.">' + (discoveryAnswers.notes || '') + '</textarea>';
+    html += '</div>';
+  } else {
+    html += '<div class="card-grid">';
+    for(var i = 0; i < step.options.length; i++){
+      var option = step.options[i];
+      var selected = discoveryAnswers[step.key] === option.value ? ' selected' : '';
+      html += '<button class="choice-card discovery-option' + selected + '" data-value="' + option.value + '">';
+      html += '<strong>' + option.value + '</strong>';
+      html += '<span>' + option.desc + '</span>';
+      html += '</button>';
+    }
+    html += '</div>';
+  }
+
+  html += '<div class="navigation">';
+  html += '<div class="progress">' + (step.textarea ? 'This step is optional.' : 'Select one option to continue.') + '</div>';
+  html += '<div class="btn-row">';
+  if(discoveryStep === 0){
+    html += '<button class="btn" id="discoverBackHomeBtn">Back</button>';
+  } else {
+    html += '<button class="btn" id="discoverPrevBtn">Back</button>';
+  }
+  html += '<button class="btn btn-primary" id="discoverNextBtn">' + (discoveryStep === discoverySteps.length - 1 ? 'See My Direction' : 'Continue') + '</button>';
+  html += '</div></div></div>';
+
+  container.innerHTML = html;
+
+  if(step.textarea){
+    document.getElementById('discoverNextBtn').addEventListener('click', function(){
+      discoveryAnswers.notes = document.getElementById('notesField').value.trim();
+      discoveryStep++;
+      renderDiscoveryResult();
+    });
+  } else {
+    var optionButtons = document.querySelectorAll('.discovery-option');
+    for(var j = 0; j < optionButtons.length; j++){
+      optionButtons[j].addEventListener('click', function(){
+        discoveryAnswers[step.key] = this.getAttribute('data-value');
+        renderDiscoveryStep();
+      });
+    }
+
+    document.getElementById('discoverNextBtn').disabled = discoveryAnswers[step.key] === '';
+
+    document.getElementById('discoverNextBtn').addEventListener('click', function(){
+      if(discoveryAnswers[step.key] === '') return;
+      discoveryStep++;
+      if(discoveryStep >= discoverySteps.length){
+        renderDiscoveryResult();
+      } else {
+        renderDiscoveryStep();
+      }
+    });
+  }
+
+  if(discoveryStep === 0){
+    document.getElementById('discoverBackHomeBtn').addEventListener('click', function(){
+      showView('homeView');
+    });
+  } else {
+    document.getElementById('discoverPrevBtn').addEventListener('click', function(){
+      discoveryStep--;
+      renderDiscoveryStep();
+    });
+  }
+}
+
+function renderDiscoveryResult(){
+  var container = document.getElementById('discoverContent');
+  var html = '';
+
+  html += '<div class="panel">';
+  html += '<h2 class="screen-title">Your BBS Direction</h2>';
+
+  html += '<div class="result-block"><p>' + buildDirection() + '</p></div>';
+  html += '<div class="result-block"><h3>What Would Suit You Best</h3><p>' + buildGarments() + '</p></div>';
+  html += '<div class="result-block"><h3>Cloth and Texture</h3><p>' + buildCloth() + '</p></div>';
+  html += '<div class="result-block"><h3>Colour Direction</h3><p>' + buildColour() + '</p></div>';
+  html += '<div class="result-block"><h3>What to Explore Next</h3><p>' + buildNext() + '</p></div>';
+
+  html += '<div class="btn-row">';
+  html += '<button class="btn" id="resultRestartBtn">Start Again</button>';
+  html += '<button class="btn" id="resultGuideBtn">Enter the BBS Guide</button>';
+  html += '<button class="btn" id="resultHomeBtn">Home</button>';
+  html += '</div>';
+
+  html += '</div>';
+
+  container.innerHTML = html;
+
+  document.getElementById('resultRestartBtn').addEventListener('click', function(){
+    discoveryAnswers.occasion = '';
+    discoveryAnswers.priority = '';
+    discoveryAnswers.style = '';
+    discoveryAnswers.wardrobe = '';
+    discoveryAnswers.notes = '';
+    discoveryStep = 0;
+    renderDiscoveryStep();
+  });
+
+  document.getElementById('resultGuideBtn').addEventListener('click', function(){
+    guidePath = [];
+    showView('guideView');
+    renderGuide();
+  });
+
+  document.getElementById('resultHomeBtn').addEventListener('click', function(){
+    showView('homeView');
+  });
+}
+
+document.getElementById('goDiscovery').addEventListener('click', function(){
+  discoveryStep = 0;
+  showView('discoverView');
+  renderDiscoveryStep();
+});
+
+document.getElementById('goGuide').addEventListener('click', function(){
+  guidePath = [];
+  showView('guideView');
+  renderGuide();
+});
+</script>
+</body>
+</html>
